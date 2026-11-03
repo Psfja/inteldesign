@@ -1,0 +1,47 @@
+/* 食光机 · 设计变量
+   主题来源：食堂菜单黑板（墨绿）+ 打饭小票（纸白 / 餐票黄）+ 剩食警示（番茄红）
+   原则：颜色只传递状态，装饰让位给信息。 */
+
+:root {
+  /* 色彩 */
+  --ink: #12231c;
+  --ink-2: #1c3b2f;
+  --moss: #2f6b4f;
+  --moss-deep: #24503c;
+  --moss-soft: #e7efe7;
+  --butter: #f2c230;
+  --butter-deep: #d9a413;
+  --butter-soft: #fbf1d3;
+  --tomato: #d9432b;
+  --tomato-soft: #fbe9e5;
+  --paper: #fbf8f1;
+  --card: #ffffff;
+  --line: #e2dccd;
+  --line-strong: #cbc3ae;
+  --muted: #6e7a6f;
+  --muted-2: #93a094;
+
+  /* 字体 */
+  --font-display: "Songti SC", "Noto Serif SC", "Source Han Serif SC", "STSong", Georgia, serif;
+  --font-body: "PingFang SC", "HarmonyOS Sans SC", "Noto Sans SC", "Microsoft YaHei",
+    system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* 尺度 */
+  --r-sm: 8px;
+  --r: 12px;
+  --r-lg: 18px;
+  --r-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(18, 35, 28, .06);
+  --shadow: 0 6px 18px -8px rgba(18, 35, 28, .18);
+  --shadow-lg: 0 24px 60px -24px rgba(18, 35, 28, .35);
+
+  /* 动效 */
+  --ease: cubic-bezier(.22, .61, .36, 1);
+  --dur: .22s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur: .001s; }
+  * { animation-duration: .001s !important; transition-duration: .001s !important; }
+}

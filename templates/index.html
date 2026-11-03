@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>食光机 · 校园余量餐食盲盒（交互设计作业）</title>
+<link rel="stylesheet" href="/static/css/tokens.css" />
+<link rel="stylesheet" href="/static/css/base.css" />
+<style>
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+  header { border-bottom: 1px solid var(--line); background: var(--card); }
+  header .wrap { display: flex; align-items: center; gap: 16px; height: 64px; }
+  .logo b { font-family: var(--font-display); font-size: 23px; letter-spacing: .05em; }
+  .logo span { font-size: 12.5px; color: var(--muted); margin-left: 8px; }
+  header .right { margin-left: auto; font-size: 13px; color: var(--muted); }
+
+  .hero { padding: 62px 0 44px; border-bottom: 1px solid var(--line); }
+  .hero h1 { font-size: 46px; line-height: 1.28; max-width: 22em; }
+  .hero .lead { margin-top: 18px; font-size: 16.5px; color: var(--muted); max-width: 42em; line-height: 1.8; }
+  .hero .tags { margin-top: 22px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .entries { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 40px 0 10px; }
+  .entry { display: block; padding: 24px; background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--r); transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+  .entry:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--line-strong); }
+  .entry .kind { font-size: 12.5px; color: var(--muted); }
+  .entry h3 { font-size: 21px; margin: 6px 0 8px; }
+  .entry p { font-size: 13.5px; color: var(--muted); line-height: 1.75; min-height: 3.5em; }
+  .entry ul { margin-top: 14px; font-size: 13px; color: var(--muted); line-height: 1.9; }
+  .entry .go { margin-top: 16px; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--moss); font-weight: 500; }
+
+  section.block { padding: 44px 0; border-top: 1px solid var(--line); }
+  section.block h2 { font-size: 24px; margin-bottom: 6px; }
+  section.block .sub { color: var(--muted); font-size: 14px; margin-bottom: 22px; }
+  .pages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .pages h4 { font-size: 14px; color: var(--muted); font-weight: 400; margin-bottom: 10px; }
+  .pages li { padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+  .pages li span { color: var(--muted); font-size: 12.5px; }
+  .map td:first-child { width: 130px; font-weight: 500; }
+  .map td { font-size: 14px; }
+  .map code { font-family: var(--font-mono); font-size: 12.5px; background: rgba(147,160,148,.14); padding: 1px 6px; border-radius: 4px; }
+  .stack { display: flex; gap: 10px; flex-wrap: wrap; }
+  .stack span { padding: 6px 14px; border: 1px solid var(--line); border-radius: var(--r-pill); font-size: 13px; background: var(--card); }
+  pre { background: var(--ink); color: var(--paper); padding: 16px 18px; border-radius: var(--r); overflow-x: auto; font-size: 13px; line-height: 1.8; }
+  footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 13px; }
+  @media (max-width: 860px) {
+    .entries, .pages { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 32px; }
+    .wrap { padding: 0 18px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="logo"><b>食光机</b><span>校园余量餐食盲盒</span></div>
+    <div class="right">交互设计课程 · 课后作业一</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <h1>闭餐前一小时，把食堂没卖完的热菜，<span class="mark-line">半价带回家</span>。</h1>
+    <p class="lead">
+      这是一个前后端完整跑通的原型：浏览器里可以真的下单、真的生成核销码、真的在商家后台核销并到账碳积分。
+      Web 端面向学生，App 端是同一套流程的手机版本，后台面向食堂档口。
+    </p>
+    <div class="tags">
+      <span class="tag">动态面板</span>
+      <span class="tag">母版复用</span>
+      <span class="tag">展开折叠节点</span>
+      <span class="tag">多级导航</span>
+      <span class="tag">SQLite 持久数据</span>
+    </div>
+
+    <div class="entries">
+      <a class="entry" href="/web">
+        <div class="kind">Web 版 · 学生端</div>
+        <h3>桌面网站</h3>
+        <p>首页、盲盒广场、盲盒详情、我的订单、碳账户共 5 个页面，宽屏布局与树形筛选。</p>
+        <ul>
+          <li>今日余量实时统计</li>
+          <li>餐段树形筛选器</li>
+          <li>预订 · 核销码 · 取消</li>
+        </ul>
+        <div class="go">打开 Web 端</div>
+      </a>
+      <a class="entry" href="/app">
+        <div class="kind">App 版 · 手机端</div>
+        <h3>手机原型</h3>
+        <p>登录、首页、详情、预订确认、订单、碳账户、我的共 7 个页面，底部 4 Tab 导航。</p>
+        <ul>
+          <li>真机尺寸的手机外壳</li>
+          <li>底部标签栏与页面栈</li>
+          <li>帮助中心手风琴</li>
+        </ul>
+        <div class="go">打开 App 端</div>
+      </a>
+      <a class="entry" href="/admin">
+        <div class="kind">Web 版 · 商家后台</div>
+        <h3>档口工作台</h3>
+        <p>经营概览、盲盒管理、订单核销、分类树、顾客与碳积分共 6 个页面。</p>
+        <ul>
+          <li>日 / 周 / 月看板切换</li>
+          <li>6 位核销码扫码验证</li>
+          <li>分类树增删改</li>
+        </ul>
+        <div class="go">打开后台</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>页面清单</h2>
+    <p class="sub">合计 18 个页面，两端都远超「各不少于 3 页」的要求。</p>
+    <div class="pages">
+      <div>
+        <h4>Web 学生端（5 页）</h4>
+        <ul>
+          <li>首页 <span>· 今日余量与运作说明</span></li>
+          <li>盲盒广场 <span>· 树形筛选与搜索</span></li>
+          <li>盲盒详情 <span>· 三态动态面板</span></li>
+          <li>我的订单 <span>· 核销码与取消</span></li>
+          <li>碳账户 <span>· 成长树与排行榜</span></li>
+        </ul>
+      </div>
+      <div>
+        <h4>App 手机端（7 页）</h4>
+        <ul>
+          <li>登录 <span>· 手机号免密</span></li>
+          <li>首页 <span>· 餐段筛选与余量横幅</span></li>
+          <li>盲盒详情 <span>· 滑动式动态面板</span></li>
+          <li>预订确认 <span>· 数量与金额</span></li>
+          <li>我的订单 <span>· 核销码大字卡</span></li>
+          <li>碳账户 <span>· 流水 / 榜单 / 兑换</span></li>
+          <li>我的 <span>· 权益与帮助中心</span></li>
+        </ul>
+      </div>
+      <div>
+        <h4>商家后台（6 页）</h4>
+        <ul>
+          <li>登录 <span>· 档口账号</span></li>
+          <li>经营概览 <span>· 日 / 周 / 月面板</span></li>
+          <li>盲盒管理 <span>· 上下架与改价</span></li>
+          <li>新建盲盒 <span>· 三步动态面板</span></li>
+          <li>订单核销 <span>· 扫码与列表</span></li>
+          <li>分类与菜品 <span>· 树形展开折叠</span></li>
+          <li>顾客与碳积分 <span>· 排行榜</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>作业的四个硬性要求落在哪</h2>
+    <p class="sub">工具换成了可运行的代码，但每个原型交互概念都保留了对应实现。</p>
+    <div class="tbl-wrap">
+      <table class="table map">
+        <thead><tr><th>要求</th><th>实现位置</th><th>代码片段</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>动态面板</td>
+            <td>详情页「里边有什么 / 取餐须知 / 评价」三态切换；后台看板日 / 周 / 月；新建盲盒三步向导；订单与碳账户的 Tab 面板</td>
+            <td><code>static/js/core.js → class Panel</code></td>
+          </tr>
+          <tr>
+            <td>母版</td>
+            <td>三端顶栏、手机底部标签栏、后台侧边导航、盲盒卡片、核销码卡片、Toast、Modal、空状态</td>
+            <td><code>Master.define() / Master.render()</code></td>
+          </tr>
+          <tr>
+            <td>展开折叠节点</td>
+            <td>盲盒广场的餐段树、后台分类树（增删改）、后台侧边导航二级菜单、帮助中心手风琴</td>
+            <td><code>bindTree() / bindAccordion()</code></td>
+          </tr>
+          <tr>
+            <td>导航</td>
+            <td>Web 顶部导航与校区切换、App 底部 4 Tab 与返回栈、后台侧边栏与面包屑、三端互跳</td>
+            <td><code>createRouter() / navigate()</code></td>
+          </tr>
+          <tr>
+            <td>两个基本功能</td>
+            <td>① 盲盒预订 → 生成核销码 → 后台核销 → 积分到账 ② 碳积分账户：累计、等级、流水、排行榜、兑换</td>
+            <td><code>server/api/student.py、server/api/admin.py</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>技术栈与运行</h2>
+    <p class="sub">无构建步骤，装完依赖直接跑。</p>
+    <div class="stack" style="margin-bottom:18px">
+      <span>Python 3 + Flask</span><span>SQLite（内置 sqlite3）</span>
+      <span>原生 ES Module</span><span>无框架 CSS</span><span>无前端打包</span>
+    </div>
+<pre>python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python scripts/seed.py --reset   # 建库并写入演示数据
+.venv/bin/python app.py                    # 打开 http://localhost:5000</pre>
+    <p class="small muted" style="margin-top:12px">
+      演示账号：学生 18800000001（林小满，已有订单与碳积分）；商家 13900000001（一食堂 · 蒸味档）。
+      学生端输入任意 11 位手机号会自动注册。
+    </p>
+  </section>
+
+  <footer>食光机 · 交互设计课后作业一 · 数据为演示用种子数据</footer>
+</div>
+</body>
+</html>
