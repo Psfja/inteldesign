@@ -28,17 +28,18 @@ def close_db(_e=None) -> None:
 
 
 def ensure_db(app) -> None:
-    """数据库不存在时自动建库并写入种子数据。"""
-    if not os.path.exists(app.config["DATABASE"]):
-        os.makedirs(os.path.dirname(app.config["DATABASE"]), exist_ok=True)
-        conn = sqlite3.connect(app.config["DATABASE"])
-        conn.executescript(open(SCHEMA_PATH, encoding="utf-8").read())
-        conn.commit()
-        conn.close()
-        import importlib
+    """数据库不存在时自动建库并写入种子数据（克隆下来直接跑也能用）。
 
-        seed = importlib.import_module("scripts.seed")
-        seed.main(reset=False)
+    注意：这里只能交给 scripts/seed.py 去做。如果先建一个空库再调 seed.main()，
+    seed 会因为「文件已存在」而直接返回，结果得到一个空数据库。
+    """
+    if os.path.exists(app.config["DATABASE"]):
+        return
+    os.makedirs(os.path.dirname(app.config["DATABASE"]), exist_ok=True)
+    import importlib
+
+    seed = importlib.import_module("scripts.seed")
+    seed.main(reset=False)
 
 
 def query(sql: str, args=()) -> list[sqlite3.Row]:
