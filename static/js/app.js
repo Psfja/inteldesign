@@ -6,23 +6,37 @@ import {
   toast, confirmBox,
 } from "./core.js";
 
-const state = { user: null, campus: "中心校区", boxes: [], cats: [], tab: "home" };
+const state = { user: null, campus: "中心校区", boxes: [], cats: [], tab: "home", booked: 0 };
 
 /* ================================================================ 母版 */
+/* 底部导航母版：图标全部画在 24 网格上，图形中心严格对齐 x=12 */
+const TAB_ICONS = {
+  home: '<path d="M12 3.4 3.8 10.6 4.8 20.4h14.4l1-9.8Z"/><path d="M9.8 20.4v-5h4.4v5"/>',
+  orders: '<path d="M6.4 3.6h11.2v16.8l-2.8-2-2.8 2-2.8-2-2.8 2Z"/><path d="M9.4 8.4h5.2"/><path d="M9.4 12.6h5.2"/>',
+  carbon: '<path d="M4.2 19.8C4.2 11.6 10.4 5.4 19.8 4.2c0 8.2-6.2 15.6-15.6 15.6Z"/><path d="m4.9 19.1 14.9-14.9"/>',
+  me: '<circle cx="12" cy="8.2" r="3.9"/><path d="M4.8 20.2a7.2 7.2 0 0 1 14.4 0"/>',
+};
+
 Master.define("app-tabbar", () => {
   const tabs = [
-    ["home", "首页", '<path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/>'],
-    ["orders", "订单", '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/><path d="M9 8h6M9 12h6"/>'],
-    ["carbon", "碳账户", '<path d="M20 4C10 4 4 9 4 17c0 0 0 3 3 3"/><path d="M4 20c6-9 13-11 16-16"/>'],
-    ["me", "我的", '<circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/>'],
+    ["home", "首页"],
+    ["orders", "订单"],
+    ["carbon", "碳账户"],
+    ["me", "我的"],
   ];
   return html`
     <nav class="app-tabbar">
       ${tabs.map(
-        ([key, label, d]) => html`
-          <button class="tab-item ${state.tab === key ? "is-on" : ""}" data-tab="${key}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
-                 stroke-linecap="round" stroke-linejoin="round">${raw(d)}</svg>
+        ([key, label]) => html`
+          <button class="tab-item ${state.tab === key ? "is-on" : ""}" data-tab="${key}"
+                  ${state.tab === key ? raw('aria-current="page"') : ""}>
+            <span class="tab-ico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                   stroke-linecap="round" stroke-linejoin="round">${raw(TAB_ICONS[key])}</svg>
+              ${key === "orders" && state.booked
+                ? html`<i class="tab-badge">${state.booked > 99 ? "99" : state.booked}</i>`
+                : ""}
+            </span>
             <span>${label}</span>
           </button>`
       )}
@@ -90,6 +104,7 @@ function viewLogin() {
           state.user = r.data.user;
           state.campus = r.data.user.campus || state.campus;
           toast(`欢迎回来，${state.user.name}`, "is-good");
+          await refreshBadge();
           navigate("/home");
         } catch (err) {
           toast(err.message, "is-bad");
@@ -304,6 +319,7 @@ async function viewConfirm({ args, params }) {
       qs("[data-pay]", root).addEventListener("click", async () => {
         try {
           const r = await api.post("/api/orders", { box_id: b.id, qty });
+          await refreshBadge();
           toast(r.message, "is-good");
           navigate("/orders");
         } catch (err) {
@@ -376,6 +392,7 @@ async function viewOrders() {
         if (!yes) return;
         try {
           const r = await api.post(`/api/orders/${c.dataset.cancel}/cancel`);
+          await refreshBadge();
           toast(r.message, "is-good");
           navigate("/orders");
         } catch (err) {
@@ -576,7 +593,7 @@ const routes = [
   { path: "/login", view: viewLogin, tab: null },
   { path: "/home", view: viewHome, tab: "home" },
   { path: "/box/:id", view: viewDetail, tab: "home" },
-  { path: "/confirm/:id", view: viewConfirm, tab: "home" },
+  { path: "/confirm/:id", view: viewConfirm, tab: null },   // 支付页不显示 Tab，避免误触离开
   { path: "/orders", view: viewOrders, tab: "orders" },
   { path: "/carbon", view: viewCarbon, tab: "carbon" },
   { path: "/me", view: viewMe, tab: "me" },
@@ -585,6 +602,22 @@ const routes = [
 const outlet = qs("#outlet");
 const tabbar = qs("#tabbar");
 const statusbar = qs("#statusbar");
+const phone = qs(".phone");
+
+/* 「订单」Tab 上的待取餐角标：拉一次数量，顺带重画 Tab 栏 */
+async function refreshBadge() {
+  if (!state.user) {
+    state.booked = 0;
+    return;
+  }
+  try {
+    const r = await api.get("/api/orders?status=all");
+    state.booked = r.data.counts.booked || 0;
+  } catch (e) {
+    /* 拿不到就保持上一次的数量，不打断页面 */
+  }
+  if (!tabbar.classList.contains("hide")) tabbar.innerHTML = Master.render("app-tabbar");
+}
 
 function navigate(to) {
   location.hash = "#" + to;
@@ -626,6 +659,7 @@ async function render() {
 
   const showTab = !!hit.route.tab;
   tabbar.classList.toggle("hide", !showTab);
+  phone.classList.toggle("no-tab", !showTab);   // 吸底操作栏据此让出 Tab 栏的高度
   if (showTab) {
     state.tab = hit.route.tab;
     tabbar.innerHTML = Master.render("app-tabbar");
@@ -676,6 +710,7 @@ window.addEventListener("hashchange", render);
   if (me.data.user) {
     state.user = me.data.user;
     state.campus = me.data.user.campus || state.campus;
+    await refreshBadge();
   }
   setClock();
   if (!location.hash || location.hash === "#") location.hash = state.user ? "#/home" : "#/login";

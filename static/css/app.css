@@ -8,6 +8,7 @@
     var(--ink);
 }
 .phone {
+  --tab-h: 58px;                  /* 底部 Tab 栏高度，吸底操作栏据此让位 */
   position: relative; width: 390px; height: 844px; max-height: calc(100vh - 52px);
   background: var(--paper); border-radius: 44px; overflow: hidden;
   border: 10px solid #163026;
@@ -25,17 +26,39 @@
 .app-body { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
 .app-body::-webkit-scrollbar { width: 0; }
 .app-tabbar {
-  flex: 0 0 auto; display: grid; grid-template-columns: repeat(4, 1fr);
-  border-top: 1px solid var(--line); background: rgba(251, 248, 241, .96);
-  backdrop-filter: blur(10px); padding-bottom: 8px;
+  flex: 0 0 var(--tab-h); height: var(--tab-h);
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -8px 18px -14px rgba(18, 35, 28, .45);
+  padding-bottom: 6px;            /* 给手机圆角留安全区 */
 }
 .tab-item {
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  padding: 8px 0 4px; background: none; border: 0; cursor: pointer;
-  color: var(--muted-2); font-size: 11px; transition: color var(--dur) var(--ease);
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  padding: 0; background: none; border: 0; cursor: pointer;
+  color: var(--muted); -webkit-tap-highlight-color: transparent;
+  transition: color var(--dur) var(--ease);
 }
-.tab-item svg { width: 22px; height: 22px; }
-.tab-item.is-on { color: var(--moss); font-weight: 600; }
+.tab-ico {
+  position: relative; width: 44px; height: 26px; border-radius: 13px;
+  display: grid; place-items: center;
+  transition: background var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.tab-item svg { width: 21px; height: 21px; }
+.tab-item > span {
+  font-size: 11px; font-weight: 500; line-height: 1.35; letter-spacing: .01em;
+}
+.tab-item.is-on { color: var(--moss-deep); }
+.tab-item.is-on .tab-ico { background: var(--moss-soft); }
+.tab-item:active .tab-ico { transform: scale(.86); }
+.tab-badge {
+  position: absolute; top: -3px; right: 3px;
+  min-width: 16px; height: 16px; padding: 0 4px;
+  border-radius: 8px; background: var(--tomato); color: #fff;
+  font-family: var(--font-body); font-size: 10px; font-weight: 600; line-height: 16px;
+  text-align: center; border: 1.5px solid var(--paper); box-sizing: content-box;
+}
 
 /* 顶部导航母版 */
 .app-nav {
@@ -112,8 +135,9 @@
 .app-price .now { font-family: var(--font-display); font-size: 32px; color: var(--tomato); line-height: 1; }
 .app-price .was { font-size: 14px; color: var(--muted-2); text-decoration: line-through; }
 
+.phone.no-tab { --tab-h: 0px; }
 .app-bottom-bar {
-  position: absolute; left: 0; right: 0; bottom: 0; z-index: 35;
+  position: absolute; left: 0; right: 0; bottom: var(--tab-h); z-index: 35;
   display: flex; align-items: center; gap: 12px; padding: 12px 20px 20px;
   background: rgba(251, 248, 241, .96); backdrop-filter: blur(10px); border-top: 1px solid var(--line);
 }
