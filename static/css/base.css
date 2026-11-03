@@ -1,0 +1,258 @@
+/* 食光机 · 基础样式与共用组件
+   共用组件（Toast / Modal / 空状态 / 树 / 动态面板 / 手风琴）在三端之间完全一致，
+   相当于 Axure 里的「母版」。 */
+
+* { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 15px/1.65 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 { margin: 0; font-weight: 600; line-height: 1.25; }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+button { font: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; }
+
+:focus-visible {
+  outline: 2px solid var(--moss);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection { background: var(--butter); color: var(--ink); }
+
+/* 数字与标题用宋体，呼应食堂菜单的书写感 */
+.num, .display, h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+.num { font-variant-numeric: tabular-nums; }
+
+.mono { font-family: var(--font-mono); letter-spacing: .08em; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.tiny { font-size: 12px; }
+.hide { display: none !important; }
+
+/* ---------------------------------------------------------- 按钮 */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 0 16px; height: 38px;
+  border: 1px solid transparent; border-radius: var(--r-pill);
+  background: var(--ink); color: var(--paper);
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  transition: background var(--dur) var(--ease), transform var(--dur) var(--ease),
+              border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.btn:hover { background: var(--ink-2); }
+.btn:active { transform: translateY(1px); }
+.btn[disabled] { opacity: .45; cursor: not-allowed; transform: none; }
+
+.btn-primary { background: var(--moss); }
+.btn-primary:hover { background: var(--moss-deep); }
+
+.btn-butter { background: var(--butter); color: var(--ink); }
+.btn-butter:hover { background: var(--butter-deep); }
+
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+.btn-ghost:hover { background: rgba(18, 35, 28, .05); border-color: var(--ink); }
+
+.btn-danger { background: transparent; color: var(--tomato); border-color: rgba(217, 67, 43, .4); }
+.btn-danger:hover { background: var(--tomato-soft); }
+
+.btn-sm { height: 30px; padding: 0 12px; font-size: 13px; }
+.btn-lg { height: 46px; padding: 0 24px; font-size: 16px; }
+.btn-block { width: 100%; }
+
+/* ---------------------------------------------------------- 标签 / 徽标 */
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 9px; border-radius: var(--r-pill);
+  font-size: 12px; line-height: 1.7; white-space: nowrap;
+  background: var(--moss-soft); color: var(--moss-deep);
+}
+.tag-live { background: var(--butter-soft); color: var(--butter-deep); }
+.tag-out { background: rgba(147, 160, 148, .18); color: var(--muted); }
+.tag-warn { background: var(--tomato-soft); color: var(--tomato); }
+
+.chip {
+  padding: 5px 13px; border-radius: var(--r-pill);
+  border: 1px solid var(--line); background: transparent;
+  font-size: 13px; color: var(--muted); cursor: pointer; white-space: nowrap;
+  transition: all var(--dur) var(--ease);
+}
+.chip:hover { border-color: var(--line-strong); color: var(--ink); }
+.chip[aria-pressed="true"] {
+  background: var(--ink); border-color: var(--ink); color: var(--paper);
+}
+
+/* ---------------------------------------------------------- 卡片 / 分隔 */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+}
+.rule { height: 1px; background: var(--line); border: 0; margin: 0; }
+
+/* ---------------------------------------------------------- 进度条 */
+.meter { height: 5px; border-radius: 3px; background: rgba(147, 160, 148, .22); overflow: hidden; }
+.meter > i {
+  display: block; height: 100%; border-radius: 3px;
+  background: var(--moss); transition: width .5s var(--ease);
+}
+.meter.is-low > i { background: var(--tomato); }
+.meter.is-mid > i { background: var(--butter-deep); }
+
+/* ---------------------------------------------------------- 表单 */
+.field { display: block; margin-bottom: 14px; }
+.field > span { display: block; margin-bottom: 6px; font-size: 13px; color: var(--muted); }
+.input, .select, textarea.input {
+  width: 100%; height: 40px; padding: 0 12px;
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--card); color: var(--ink); font: inherit; font-size: 14px;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+textarea.input { height: auto; padding: 10px 12px; line-height: 1.6; resize: vertical; }
+.input:focus, .select:focus, textarea.input:focus {
+  outline: none; border-color: var(--moss); box-shadow: 0 0 0 3px rgba(47, 107, 79, .12);
+}
+.input::placeholder { color: var(--muted-2); }
+.select { appearance: none; padding-right: 30px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' stroke='%236e7a6f' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 11px center; }
+
+/* ---------------------------------------------------------- 动态面板
+   Axure 的 Dynamic Panel：一个容器，多个状态，同一时刻只显示一个。 */
+.panel { position: relative; }
+.panel-track { display: flex; width: 100%; transition: transform var(--dur) var(--ease); }
+.panel-track.no-anim { transition: none; }
+.panel-state { flex: 0 0 100%; width: 100%; min-width: 0; }
+.panel-fade { position: relative; }
+.panel-fade > .panel-state {
+  position: absolute; inset: 0; opacity: 0; pointer-events: none;
+  transition: opacity var(--dur) var(--ease);
+}
+.panel-fade > .panel-state.is-active { position: relative; opacity: 1; pointer-events: auto; }
+
+/* 面板切换器 */
+.panel-tabs {
+  display: inline-flex; gap: 2px; padding: 3px;
+  background: rgba(147, 160, 148, .14); border-radius: var(--r-pill);
+}
+.panel-tabs button {
+  padding: 5px 16px; border: 0; border-radius: var(--r-pill);
+  background: transparent; color: var(--muted);
+  font-size: 13px; cursor: pointer; transition: all var(--dur) var(--ease);
+}
+.panel-tabs button[aria-selected="true"] {
+  background: var(--card); color: var(--ink); font-weight: 500; box-shadow: var(--shadow-sm);
+}
+
+/* ---------------------------------------------------------- 树（展开折叠节点） */
+.tree { font-size: 14px; }
+.tree-node { border-bottom: 1px solid var(--line); }
+.tree-node:last-child { border-bottom: 0; }
+.tree-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: var(--r-sm); cursor: pointer;
+  transition: background var(--dur) var(--ease);
+}
+.tree-row:hover { background: rgba(147, 160, 148, .1); }
+.tree-row.is-active { background: var(--moss-soft); color: var(--moss-deep); font-weight: 500; }
+.tree-caret {
+  flex: 0 0 16px; width: 16px; height: 16px; display: grid; place-items: center;
+  color: var(--muted); transition: transform var(--dur) var(--ease);
+}
+.tree-caret svg { width: 10px; height: 10px; }
+.tree-node.is-open > .tree-row .tree-caret { transform: rotate(90deg); }
+.tree-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tree-children { padding-left: 18px; display: none; }
+.tree-node.is-open > .tree-children { display: block; }
+.tree-leaf .tree-caret { visibility: hidden; }
+
+/* 手风琴 */
+.acc { border-top: 1px solid var(--line); }
+.acc-item { border-bottom: 1px solid var(--line); }
+.acc-head {
+  width: 100%; display: flex; align-items: center; gap: 10px;
+  padding: 13px 2px; background: none; border: 0; text-align: left; cursor: pointer;
+  font-size: 14px; color: var(--ink);
+}
+.acc-head:hover { color: var(--moss); }
+.acc-caret { flex: 0 0 14px; transition: transform var(--dur) var(--ease); color: var(--muted); }
+.acc-item.is-open .acc-caret { transform: rotate(90deg); }
+.acc-body { display: none; padding: 0 2px 14px 24px; color: var(--muted); font-size: 14px; line-height: 1.75; }
+.acc-item.is-open .acc-body { display: block; }
+
+/* ---------------------------------------------------------- Toast（母版） */
+.toast-stack {
+  position: fixed; z-index: 200; left: 50%; top: 22px; transform: translateX(-50%);
+  display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none;
+}
+.toast {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 18px; border-radius: var(--r-pill);
+  background: var(--ink); color: var(--paper); font-size: 14px;
+  box-shadow: var(--shadow-lg);
+  animation: toast-in .28s var(--ease);
+}
+.toast.is-bad { background: var(--tomato); }
+.toast.is-good { background: var(--moss); }
+.toast.is-out { animation: toast-out .2s var(--ease) forwards; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(-10px); } }
+@keyframes toast-out { to { opacity: 0; transform: translateY(-8px); } }
+
+/* ---------------------------------------------------------- Modal（母版） */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 210;
+  display: grid; place-items: center; padding: 20px;
+  background: rgba(18, 35, 28, .42);
+  animation: fade-in .18s var(--ease);
+}
+.modal {
+  width: 100%; max-width: 440px; max-height: 84vh; overflow: auto;
+  background: var(--card); border-radius: var(--r-lg); padding: 24px;
+  box-shadow: var(--shadow-lg);
+  animation: modal-in .24s var(--ease);
+}
+.modal h3 { margin-bottom: 6px; font-size: 19px; }
+.modal-foot { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes modal-in { from { opacity: 0; transform: translateY(14px) scale(.98); } }
+
+/* ---------------------------------------------------------- 空状态（母版） */
+.empty { padding: 52px 20px; text-align: center; color: var(--muted); }
+.empty-emoji { font-size: 34px; display: block; margin-bottom: 10px; filter: grayscale(.2); }
+.empty p { margin-bottom: 14px; font-size: 14px; }
+
+/* ---------------------------------------------------------- 骨架屏 */
+.skeleton { background: linear-gradient(90deg, #eee9dc 25%, #f6f2e8 37%, #eee9dc 63%);
+  background-size: 400% 100%; animation: sk 1.3s ease-in-out infinite; border-radius: 6px; }
+@keyframes sk { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+
+/* ---------------------------------------------------------- 表格 */
+.table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table th {
+  text-align: left; font-weight: 500; color: var(--muted); font-size: 13px;
+  padding: 10px 12px; border-bottom: 1px solid var(--line-strong); white-space: nowrap;
+}
+.table td { padding: 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.table tbody tr:hover { background: rgba(147, 160, 148, .07); }
+.table .num { font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------- 手写下划线强调 */
+.mark-line { position: relative; z-index: 0; white-space: nowrap; }
+.mark-line::after {
+  content: ""; position: absolute; left: -2px; right: -2px; bottom: .04em; height: .34em;
+  background: var(--butter); z-index: -1; border-radius: 2px;
+  transform: rotate(-.4deg);
+}
