@@ -27,9 +27,14 @@
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/python scripts/seed.py --reset   # 建库 + 写入演示数据
 .venv/bin/python app.py                    # http://localhost:5000
 ```
+
+首次启动会自动在 `data/foodbox.sqlite3` 建库并写入演示数据，不用先跑 seed。
+想重置数据：`.venv/bin/python scripts/seed.py --reset`。
+
+换端口：`.venv/bin/python app.py --port 5050`。
+macOS 上 5000 端口常被「隔空播放接收器」占用，报 `Address already in use` 时换个端口即可。
 
 无构建步骤：后端是 Python + Flask，数据库用 Python 自带的 `sqlite3`，前端是原生 ES Module + 手写 CSS。
 
